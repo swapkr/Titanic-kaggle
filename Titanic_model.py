@@ -280,8 +280,8 @@ x['Fare']=x['Fare'].map(lambda i:np.log(i) if i>0 else 0)
 
 from sklearn.preprocessing import StandardScaler
 sc=StandardScaler()
-x=sc.fit_transform(x)
-
+sc.fit(x)
+x=sc.transform(x)
 
 # In[48]:
 
