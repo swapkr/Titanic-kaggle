@@ -11,15 +11,15 @@ pickle_in=open('scale.pkl','rb')
 sc=pickle.load(pickle_in)
 pickle_in.close()
 
-st.markdown(sc.scale_)
+
 
 def predict_survival(Pclass,Sex,Age,Total_fare,Family_size,Queenstown,Southampton):
-    x=np.array([[Pclass,Sex,Age,np.log(Total_fare),Family_size,Queenstown,Southampton]])
-    st.markdown(sc.transform(x))
-#     if classifier.predict(x).astype(int):
-#         return 'congratulations you have Survived'
-#     else:
-#         return 'The world will mourn for you'
+    x=np.array([[Pclass,Sex,Age,np.log(Total_fare),Family_size,Queenstown,Southampton]],dtype=float)
+    x=(x-sc.mean_)/sc.scale_
+    if classifier.predict(x).astype(int):
+        return 'congratulations you have Survived'
+    else:
+        return 'The world will mourn for you'
 
 
 def main():
