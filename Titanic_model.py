@@ -3,7 +3,7 @@
 
 # # Import the library
 
-# In[1]:
+# In[69]:
 
 
 import pandas as pd
@@ -13,7 +13,7 @@ import seaborn as sns
 sns.set()
 
 
-# In[2]:
+# In[70]:
 
 
 train=pd.read_csv('datasets/train.csv')
@@ -22,49 +22,49 @@ test=pd.read_csv('datasets/test.csv')
 
 # # EDA
 
-# In[3]:
+# In[140]:
 
 
 train.head()
 
 
-# In[4]:
+# In[141]:
 
 
 train.isna().sum()
 
 
-# In[5]:
+# In[142]:
 
 
 test.isna().sum()
 
 
-# In[6]:
+# In[143]:
 
 
 dataset=pd.concat((train, test), axis=0)
 
 
-# In[7]:
+# In[144]:
 
 
 dataset.set_index('PassengerId',inplace=True)
 
 
-# In[8]:
+# In[145]:
 
 
 dataset['Age'].plot.hist(bins=50);
 
 
-# In[9]:
+# In[146]:
 
 
 dataset['Age'].describe()
 
 
-# In[10]:
+# In[147]:
 
 
 age_mean=dataset['Age'].mean()
@@ -74,134 +74,134 @@ random_list=np.random.randint(low=age_mean-age_std, high=age_mean+age_std, size=
 dataset['Age'][dataset['Age'].isna()]=random_list
 
 
-# In[11]:
+# In[148]:
 
 
 dataset['Age'].plot.hist(bins=50);
 
 
-# In[12]:
+# In[149]:
 
 
 dataset['Age'].describe()
 
 
-# In[13]:
+# In[150]:
 
 
 sns.countplot('Embarked', data=dataset);
 
 
-# In[14]:
+# In[151]:
 
 
 dataset['Embarked'].fillna('S', inplace=True)
 
 
-# In[15]:
+# In[152]:
 
 
 dataset.isna().sum()
 
 
-# In[16]:
+# In[153]:
 
 
 dataset['Family_size']=dataset['SibSp']+dataset['Parch']+1
 
 
-# In[17]:
+# In[154]:
 
 
 sns.countplot('Family_size', data=dataset)
 
 
-# In[18]:
+# In[155]:
 
 
 dataset['Fare'][dataset['Fare'].isna()]
 
 
-# In[19]:
+# In[156]:
 
 
 dataset.loc[1044]
 
 
-# In[20]:
+# In[157]:
 
 
 dataset.loc[((dataset['Pclass']==3) & (dataset['Family_size']==1)),'Fare'].plot.hist()
 
 
-# In[21]:
+# In[158]:
 
 
 dataset.loc[((dataset['Pclass']==3) & (dataset['Family_size']==1)),'Fare'].median()
 
 
-# In[22]:
+# In[159]:
 
 
 dataset.loc[((dataset['Pclass']==3) & (dataset['Family_size']==2)),'Fare'].plot.hist();
 
 
-# In[23]:
+# In[160]:
 
 
 dataset['Fare'].fillna(7.8542, inplace=True)
 
 
-# In[24]:
+# In[161]:
 
 
 dataset.drop('Cabin', axis=1, inplace=True)
 
 
-# In[25]:
+# In[162]:
 
 
 dataset.head()
 
 
-# In[26]:
+# In[163]:
 
 
 sns.countplot('Pclass', hue='Survived', data=dataset)
 
 
-# In[27]:
+# In[164]:
 
 
 sns.countplot('Embarked', hue='Survived', data=train)
 
 
-# In[28]:
+# In[165]:
 
 
 # pclass=(train.groupby('Pclass')['Survived'].mean()*10)/2.423625
 # pclass
 
 
-# In[29]:
+# In[166]:
 
 
 train.groupby('Embarked')['Survived'].mean()
 
 
-# In[30]:
+# In[167]:
 
 
 sns.countplot('Embarked', hue='Pclass', data=test);
 
 
-# In[31]:
+# In[168]:
 
 
 # dataset['Pclass']=dataset['Pclass'].map(pclass) 
 
 
-# In[32]:
+# In[169]:
 
 
 dataset=pd.concat((dataset,pd.get_dummies(dataset.Embarked, drop_first=True,columns={'Q':'Queenstown','S':'Southampton'})), axis=1)
@@ -213,69 +213,69 @@ dataset=pd.concat((dataset,pd.get_dummies(dataset.Embarked, drop_first=True,colu
 
 
 
-# In[33]:
+# In[170]:
 
 
 dataset.groupby('Sex')["Survived"].mean()
 
 
-# In[34]:
+# In[171]:
 
 
 sex={'male':0,'female':1}
 dataset['Sex']=dataset['Sex'].map(sex)
 
 
-# In[35]:
+# In[172]:
 
 
 dataset
 
 
-# In[36]:
+# In[173]:
 
 
 dataset.drop(['Name', 'SibSp', 'Parch', 'Ticket','Embarked'], axis=1,inplace=True)
 
 
-# In[37]:
+# In[174]:
 
 
 dataset.head()
 
 
-# In[38]:
+# In[175]:
 
 
 dataset.rename(columns={'Q':'Queenstown','S':'Southampton'},inplace=True)
 
 
-# In[39]:
+# In[176]:
 
 
 dataset
 
 
-# In[40]:
+# In[177]:
 
 
 x=dataset.drop('Survived', axis=1)
 y=dataset['Survived'].values
 
 
-# In[41]:
+# In[178]:
 
 
 sns.distplot(x['Fare']);
 
 
-# In[42]:
+# In[179]:
 
 
 x['Fare']=x['Fare'].map(lambda i:np.log(i) if i>0 else 0)
 
 
-# In[43]:
+# In[180]:
 
 
 from sklearn.preprocessing import StandardScaler
@@ -283,7 +283,8 @@ sc=StandardScaler()
 sc.fit(x)
 x=sc.transform(x)
 
-# In[48]:
+
+# In[113]:
 
 
 train_x=x[:891,:]
@@ -293,7 +294,7 @@ train_y=y[:891]
 
 # # Model Building
 
-# In[49]:
+# In[114]:
 
 
 from sklearn.linear_model import LogisticRegression
@@ -304,14 +305,14 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier
 
 
-# In[50]:
+# In[115]:
 
 
 from sklearn.model_selection import KFold,cross_val_score
 kfold=KFold(n_splits=10,shuffle=True, random_state=0)
 
 
-# In[51]:
+# In[116]:
 
 
 clf=LogisticRegression(max_iter=1000)
@@ -319,13 +320,13 @@ score=cross_val_score(clf, train_x,train_y, cv=kfold)
 score
 
 
-# In[52]:
+# In[117]:
 
 
 score.mean()
 
 
-# In[53]:
+# In[118]:
 
 
 clf=KNeighborsClassifier(n_neighbors=12)
@@ -333,13 +334,13 @@ score=cross_val_score(clf, train_x,train_y, cv=kfold)
 score
 
 
-# In[54]:
+# In[119]:
 
 
 score.mean()
 
 
-# In[55]:
+# In[120]:
 
 
 clf=SVC(random_state=0)
@@ -347,13 +348,13 @@ score=cross_val_score(clf, train_x,train_y, cv=kfold)
 score
 
 
-# In[56]:
+# In[121]:
 
 
 score.mean()
 
 
-# In[57]:
+# In[122]:
 
 
 clf=GaussianNB()
@@ -361,13 +362,13 @@ score=cross_val_score(clf, train_x,train_y, cv=kfold)
 score
 
 
-# In[58]:
+# In[123]:
 
 
 score.mean()
 
 
-# In[59]:
+# In[124]:
 
 
 clf=DecisionTreeClassifier(random_state=0)
@@ -375,13 +376,13 @@ score=cross_val_score(clf, train_x,train_y, cv=kfold)
 score
 
 
-# In[60]:
+# In[125]:
 
 
 score.mean()
 
 
-# In[61]:
+# In[126]:
 
 
 clf=RandomForestClassifier(n_estimators=12, random_state=0)
@@ -389,26 +390,26 @@ score=cross_val_score(clf, train_x,train_y, cv=kfold)
 score
 
 
-# In[62]:
+# In[127]:
 
 
 score.mean()
 
 
-# In[63]:
+# In[128]:
 
 
 clf=SVC(random_state=0)
 clf.fit(train_x,train_y)
 
 
-# In[64]:
+# In[129]:
 
 
 y_pred=clf.predict(test_x).astype(int)
 
 
-# In[65]:
+# In[130]:
 
 
 PassengerId=pd.read_csv('datasets/gender_submission.csv')['PassengerId']
@@ -417,7 +418,7 @@ pd.DataFrame({'Survived':y_pred}, index=PassengerId).to_csv('titanic_pred.csv')
 
 # ### Dumping the model and preprocessing scale
 
-# In[66]:
+# In[131]:
 
 
 import pickle
@@ -426,7 +427,7 @@ pickle.dump(clf,pickle_out)
 pickle_out.close()
 
 
-# In[68]:
+# In[132]:
 
 
 import pickle
